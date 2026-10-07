@@ -174,6 +174,19 @@ main[data-off~="v"] [data-sec="v"],main[data-off~="c"] [data-sec="c"],main[data-
   .secs-m button{font:inherit;font-size:.74rem;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:999px;padding:1px 9px;cursor:pointer}
   .toc-wrap .toc{display:none}
 }
+/* 6. 본문 성경말씀 목록 */
+.qb[aria-pressed="true"]{background:var(--chip);border-color:var(--brass)}
+.vhead h2{font-family:var(--f-display);font-size:1.5rem;margin:0 0 4px}
+.vhead p{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.vlist{display:flex;flex-direction:column;gap:8px}
+.vrow{font:inherit;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 16px;cursor:pointer;display:grid;grid-template-columns:130px minmax(0,1fr);gap:2px 14px;align-items:baseline}
+.vrow:hover,.vrow:focus-visible{border-color:var(--accent);outline:none}
+.vrow .vd{color:var(--brass);font-weight:600;font-size:.85rem;font-variant-numeric:tabular-nums}
+.vrow .vt{font-weight:600}
+.vrow .vr{grid-column:2;color:var(--accent);font-size:.85rem}
+.vrow .vv{grid-column:2;color:var(--muted);font-size:.85rem;line-height:1.6;font-family:var(--f-display)}
+.vback{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:999px;padding:4px 14px;cursor:pointer}
+@media (max-width:480px){.vrow{grid-template-columns:1fr}.vrow .vr,.vrow .vv{grid-column:1}}
 </style>
 </head>
 <body>
@@ -203,7 +216,7 @@ main[data-off~="v"] [data-sec="v"],main[data-off~="c"] [data-sec="c"],main[data-
 <div id="app" hidden></div>
 <script>
 (function(){
-const P={"s": "3+A+UWhXP+SUOY4tvKRUtw==", "n": 600000, "v": "ce1eea2546"};
+const P={"s": "3+A+UWhXP+SUOY4tvKRUtw==", "n": 600000, "v": "cc2c3a32a7"};
 const u=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 let key=null;
 async function derive(pw){

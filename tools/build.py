@@ -6,7 +6,7 @@
 - tools/shell.html, tools/loader.js : 잠금 화면 + 복호화 로더 (공개)
 - tools/salt.txt : PBKDF2 salt (공개해도 무방, 바꾸면 캐시된 파일과 호환되지 않음)
 """
-import base64, glob, gzip, hashlib, json, os, secrets, shutil, sys
+import base64, glob, gzip, hashlib, hmac, json, os, secrets, shutil, sys
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,11 +19,15 @@ if not pw:
 if not os.path.exists("tools/salt.txt"):
     open("tools/salt.txt", "w").write(base64.b64encode(secrets.token_bytes(16)).decode())
 salt = base64.b64decode(open("tools/salt.txt").read().strip())
-aes = AESGCM(hashlib.pbkdf2_hmac("sha256", pw.encode(), salt, ITER, 32))
+key = hashlib.pbkdf2_hmac("sha256", pw.encode(), salt, ITER, 32)
+aes = AESGCM(key)
+ivkey = hashlib.sha256(key + b"iv").digest()
 
 def pack(obj):
     raw = json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode()
-    iv = secrets.token_bytes(12)
+    # 내용이 같으면 결과 파일도 같게(IV = HMAC(평문)) -> 바뀐 연도만 git diff에 잡힘.
+    # 평문이 다르면 IV도 달라지므로 같은 키로 IV를 재사용하지 않는다.
+    iv = hmac.new(ivkey, raw, hashlib.sha256).digest()[:12]
     return iv + aes.encrypt(iv, gzip.compress(raw, 9, mtime=0), None)
 
 def read(p):
